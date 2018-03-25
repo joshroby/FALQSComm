@@ -38,7 +38,7 @@ var view = {
 					headerDiv.appendChild(OfficeStaffSummary);
 					OfficeStaffSummary.id = 'OfficeStaffSummary';
 					h2.innerHTML = "Working out of your apartment";
-					OfficeStaffSummary.innerHTML = "0 staff / 4 max - $0/tick payroll";
+					OfficeStaffSummary.innerHTML = "0 staff / 4 max - $0/week payroll";
 				} else if (header == 'Legislature') {
 					view.displayStats(['Clout','Obstruction'],header,headerDiv,'block');
 				} else if (header == 'Candidates') {
@@ -125,7 +125,7 @@ var view = {
 				var button = document.createElement('button');
 				button.id = employee.name.replace(/ /g,'') + 'TrainButton';
 				button.addEventListener('click',handlers.train.bind(game,employee));
-				button.innerHTML = "Train ($" +employee.pay+ "/tick)";
+				button.innerHTML = "Train ($" +employee.pay+ "/week)";
 				employeeDiv.appendChild(button);
 				var button = document.createElement('button');
 				button.id = employee.name.replace(/ /g,'') + 'FireButton';
@@ -194,7 +194,7 @@ var view = {
 			var allyDescription = document.createElement('p');
 			allyDiv.appendChild(allyDescription);
 			allyDescription.className = 'allyDescription';
-			allyDescription.innerHTML += ally.members.toLocaleString() + ' members, ' + ally.tickCostNum + ' ' + ally.tickCostStat + '/tick ';
+			allyDescription.innerHTML += ally.members.toLocaleString() + ' members, ' + ally.tickCostNum + ' ' + ally.tickCostStat + '/week ';
 			var allyButton = document.createElement('button');
 			allyDescription.appendChild(allyButton);
 			allyButton.id = ally.name.replace(/ /g,'') + "AllyButton";
@@ -240,13 +240,12 @@ var view = {
 		if (stat == "Money") {
 			string = "$" + string;
 		} else if (stat == "Next Election") {
-			string = string + " ticks";
+			string = string + " weeks";
 		} else if (stat == "Chances"  || stat == 'Assets Seized' || stat == 'Population Enslaved' || stat == 'Launch Preparation') {
 			string = (Math.round(game[stat.toLowerCase().replace(/ /g,'')]*10000)/100) + "%";
 		} else if (stat == 'Support') {
 			string = game.support.toLocaleString() + ' / ' + Math.ceil(game.electoralThreshold).toLocaleString();
 		};
-		if (stat == 'Launch Preparation') {console.log(game.launchpreparation)};
 		document.getElementById(stat.replace(/ /g,'') + "Display").innerHTML = string + " ";
 	},
 	
@@ -301,16 +300,16 @@ var view = {
 		document.getElementById(action.name.replace(/ /g,'') + "PlanButton").disabled = false;
 	},
 	
-	displayEventResult: function(action,turnout) {
+	displayEventResult: function(action,turnout,buzzModifier) {
 		var CoordinationNotesDiv = document.getElementById('CoordinationNotesDiv');
 		CoordinationNotesDiv.style.display = 'block';
 		CoordinationNotesDiv.innerHTML = '';
 		var div = document.createElement('div');
-		div.innerHTML = action.name + ' had '+turnout.toLocaleString()+" turnout amid "+(Math.round(game.buzz*100)/100).toLocaleString()+" buzz.";
+		div.innerHTML = action.name + ' had '+turnout.toLocaleString()+" turnout amid "+(Math.round(game.buzz*100)/100).toLocaleString()+" buzz (x"+buzzModifier+").";
 		CoordinationNotesDiv.appendChild(div);
 		var ul = document.createElement('ul');
 		CoordinationNotesDiv.appendChild(ul);
-		for (var stat of ['people','money','reputation']) {
+		for (var stat of ['people','money','reputation','support']) {
 			var num = Math.floor(action[stat] * turnout * game.buzzModifier());
 			if (num > 0) {
 				var li = document.createElement('li');
@@ -483,6 +482,7 @@ var view = {
 			legislation.node.setAttribute('fill','grey');
 			legislation.node.setAttribute('stroke','none');
 		} else if (legislation.status == 'enacted') {
+			legislation.node.setAttribute('fill','black');
 			legislation.node.setAttribute('stroke','white');
 			legislation.node.setAttribute('stroke-width','0.5');
 			legislation.node.setAttribute('paint-order','stroke');
@@ -692,6 +692,94 @@ var view = {
 			text.setAttribute('y',57.5);
 			text.setAttribute('text-anchor','middle');
 			text.setAttribute('fill','black');
+			text.setAttribute('font-size',7.5);
+			text.setAttribute('font-weight','bold');
+			text.innerHTML = button.string;
+		
+			setTimeout(view.victorySnap.bind(view,anchor),i);
+			i+= 500;
+		};
+		
+		// 
+		
+// 		document.body.innerHTML = '';
+		document.body.appendChild(svg);
+	},
+	
+	defeatScreen: function() {
+		var svg = document.createElementNS('http://www.w3.org/2000/svg','svg');
+		svg.id = 'victorySVG';
+		svg.setAttribute('viewBox','-100 -61.5 200 123');
+		var backsplash = document.createElementNS('http://www.w3.org/2000/svg','g');
+		svg.appendChild(backsplash);
+		var rect = document.createElementNS('http://www.w3.org/2000/svg','rect');
+		backsplash.appendChild(rect);
+		rect.setAttribute('x',-110);
+		rect.setAttribute('y',-70);
+		rect.setAttribute('width',220);
+		rect.setAttribute('height',140);
+		rect.setAttribute('fill','white');
+		var animate = document.createElementNS('http://www.w3.org/2000/svg','animate');
+		backsplash.appendChild(animate);
+		animate.setAttribute('attributeName','opacity');
+		animate.setAttribute('from','0');
+		animate.setAttribute('to','1');
+		animate.setAttribute('dur','6s');
+		animate.setAttribute('begin','indefinite');
+		animate.beginElement();
+
+
+		var words = [
+			{string:'When the corporations take over, it is not gently.',x:0,y:-30,size:3.5,xScale:1},
+			{string:'All public art is destroyed.  Everything deemed a luxury is confiscated.  Dissent is crushed.',x:0,y:-20,size:3.5,xScale:1},
+			{string:'The Legislature is reconstituted, with seats explicitly going to the highest bidder.',x:0,y:-10,size:3.5,xScale:1},
+			{string:'The corporate owners retreat to space stations.  Everyone left becomes an "employee."',x:0,y:0,size:3.5,xScale:1},
+			{string:'Disinformation blares across every screen, demonizing you and your organization.',x:0,y:10,size:3.5,xScale:1},
+			{string:"There is no outcry&#8212;there isn't even media coverage&#8212;when you are shot.",x:0,y:20,size:3.5,xScale:1},
+		];
+		var i = 4000;
+		for (var word of words) {
+			var text = document.createElementNS('http://www.w3.org/2000/svg','text');
+			text.setAttribute('x',word.x);
+			text.setAttribute('y',word.y);
+			text.setAttribute('text-anchor','middle');
+			text.setAttribute('font-size',word.size);
+			text.setAttribute('font-weight','bolder');
+			text.setAttribute('fill','black');
+			text.setAttribute('transform','scale('+word.xScale+',1)');
+			text.innerHTML = word.string
+			
+			setTimeout(view.victorySnap.bind(view,text),i);
+			i += 2000;
+		};
+		
+		i+= 1000;
+		
+		// Buttons
+		var buttons = [
+			{string:'Play Again',x:-30,href:''},
+			{string:'Patreon',x:30,href:'https://www.patreon.com/joshroby'},
+// 			{string:'Brag',x:50,href:'http://twitter.com/home?status=I unlocked FALQSComm in '+game.tickCount.toLocaleString()+' weeks! http://joshroby.com/FALQSComm/'},
+		];
+		for (var button of buttons) {
+			var anchor = document.createElementNS('http://www.w3.org/2000/svg','a');
+			anchor.setAttribute('href',button.href);
+			if (button.href !== '' ) {anchor.setAttribute('target','_blank');};
+			var rect = document.createElementNS('http://www.w3.org/2000/svg','rect');
+			anchor.appendChild(rect);
+			rect.setAttribute('x',button.x - 22);
+			rect.setAttribute('width',44);
+			rect.setAttribute('y',50);
+			rect.setAttribute('height',10);
+			rect.setAttribute('rx',4);
+			rect.setAttribute('ry',4);
+			rect.setAttribute('fill','black');
+			var text = document.createElementNS('http://www.w3.org/2000/svg','text');
+			anchor.appendChild(text);
+			text.setAttribute('x',button.x);
+			text.setAttribute('y',57.5);
+			text.setAttribute('text-anchor','middle');
+			text.setAttribute('fill','white');
 			text.setAttribute('font-size',7.5);
 			text.setAttribute('font-weight','bold');
 			text.innerHTML = button.string;

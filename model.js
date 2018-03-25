@@ -37,7 +37,7 @@ function Game() {
 	this.allymembers = 0;
 	this.reputation = 0.1;
 	this.buzz = 0;
-	this.buzzModifier = function() {return Math.min(10,game.buzz * 0.02)};
+	this.buzzModifier = function() {return Math.floor(Math.log(this.buzz+1) / Math.LN10 + 1.000000001) };
 	
 	this.officespace = 4;
 	
@@ -68,19 +68,19 @@ function Game() {
 		Organization: [
 			{name:'Unlock March',key:'March',stat:'People',minimum:10,reveal:'MarchActionDiv'},
 			{name:'Unlock Picket',key:'Picket',stat:'People',minimum:20,reveal:'PicketActionDiv'},
-			{name:'Unlock Protest',key:'Protest',stat:'People',minimum:50,reveal:'ProtestActionDiv'},
 			{name:'Unlock Direct Action',key:'DirectAction',stat:'People',minimum:100,reveal:'DirectActionActionDiv'},
-			{name:'Unlock Rally',key:'Rally',stat:'People',minimum:500,reveal:'RallyActionDiv'},
+			{name:'Unlock Protest',key:'Protest',stat:'People',minimum:200,reveal:'ProtestActionDiv'},
+			{name:'Unlock Rally',key:'Rally',stat:'People',minimum:1000,reveal:'RallyActionDiv'},
 			{name:'Unlock General Strike',key:'GeneralStrike',stat:'People',minimum:100000,reveal:'GeneralStrikeActionDiv'},
 		],
 		Reputation: [
 			{name:'Unlock Coordinated Social Media',key:'SocialMediaAmbassadors',stat:'Reputation',minimum:10,reveal:'SocialMediaAmbassadorsEmployeeDiv'},
-			{name:'Unlock Volunteer Coordinators',key:'VolunteerCoordinators',stat:'Reputation',minimum:50,reveal:'VolunteerCoordinatorsEmployeeDiv'},
+			{name:'Unlock Fundraiser Event',key:'Fundraiser',stat:'Reputation',minimum:50,reveal:'FundraiserActionDiv'},
 			{name:'Unlock Alliances',key:'Alliances',stat:'Reputation',minimum:100,reveal:'AlliancesAlliesDiv'},
-			{name:'Unlock Fundraiser Events',key:'Fundraiser',stat:'Reputation',minimum:200,reveal:'FundraiserActionDiv'},
-			{name:'Unlock Recruiters',key:'Recruiters',stat:'Reputation',minimum:300,reveal:'RecruitersEmployeeDiv'},
-			{name:'Unlock Professional Fundraisers',key:'Fundraisers',stat:'Reputation',minimum:500,reveal:'FundraisersEmployeeDiv'},
-			{name:'Unlock Event Planners',key:'EventPlanners',stat:'Reputation',minimum:1000,reveal:'EventPlannersEmployeeDiv'},
+			{name:'Unlock Volunteer Coordinators',key:'VolunteerCoordinators',stat:'Reputation',minimum:200,reveal:'VolunteerCoordinatorsEmployeeDiv'},
+			{name:'Unlock Recruiters',key:'Recruiters',stat:'Reputation',minimum:500,reveal:'RecruitersEmployeeDiv'},
+			{name:'Unlock Professional Fundraisers',key:'Fundraisers',stat:'Reputation',minimum:1000,reveal:'FundraisersEmployeeDiv'},
+			{name:'Unlock Event Planners',key:'EventPlanners',stat:'Reputation',minimum:2000,reveal:'EventPlannersEmployeeDiv'},
 // 			{name:'Unlock Networkers',key:'Networkers',stat:'Reputation',minimum:2000,reveal:'NetworkersEmployeeDiv'},
 			{name:'Unlock Grant Writers',key:'GrantWriters',stat:'Reputation',minimum:7500,reveal:'GrantWritersEmployeeDiv'},
 			{name:'Unlock Action Campaign',key:'DirectActionCampaign',stat:'Reputation',minimum:10000,reveal:'DirectActionCampaignActionDiv'},
@@ -115,28 +115,31 @@ function Game() {
 	];
 	
 	this.upgrades = [
-		{name:'Launch Website',header: 'Office',costStat:'Money',costNum:1000,description:'Increases recruitment and fundraising effectiveness.'},
-		{name:'Recurring Donations',prerequisite:'Launch Website',header: 'Office',costStat:'Money',costNum:1000,description:'Secures a small income based on membership size.'},
-		{name:'Office Unit',header: 'Office',costStat:'Money',costNum:1000,upgradeStat:'Office Space',upgradeToNum:10},
-		{name:'Office Suite',prerequisite:'Office Unit',header: 'Office',costStat:'Money',costNum:5000,upgradeStat:'Office Space',upgradeToNum:20},
-		{name:'Storefront Office',prerequisite:'Office Suite',header: 'Office',costStat:'Money',costNum:10000,upgradeStat:'Office Space',upgradeToNum:50},
-		{name:'Small Office Building',prerequisite:'Storefront Office',header: 'Office',costStat:'Money',costNum:50000,upgradeStat:'Office Space',upgradeToNum:100},
-		{name:'Tower Floor',prerequisite:'Small Office Building',header: 'Office',costStat:'Money',costNum:500000,upgradeStat:'Office Space',upgradeToNum:200},
-		{name:'Office Tower',prerequisite:'Tower Floor',header: 'Office',costStat:'Money',costNum:1000000,upgradeStat:'Office Space',upgradeToNum:500},
+		{name:'Launch Website',header: 'Office',costStat:'Money',costNum:100,description:'Increases recruitment and fundraising effectiveness.'},
+		{name:'Recurring Donations',prerequisite:'Launch Website',header: 'Office',costStat:'Money',costNum:500,description:'Secures a small income based on membership size.'},
+		{name:'Integrated Social Media',prerequisite:'Launch Website',header: 'Office',costStat:'Money',costNum:500,description:'Social Media Ambassadors decrease buzz decay rate.'},
+		{name:'Online Calendar',prerequisite:'Launch Website',header: 'Office',costStat:'Money',costNum:1000,description:'Allows volunteers to contribute shifts to events in a chaotic and unreliable fashion.'},
+// 		{name:'Revamp Website',prerequisite:'Launch Website',header: 'Office',costStat:'Money',costNum:10000,description:'Improves all website benefits.'},
+		{name:'Office Unit',header: 'Office',costStat:'Money',costNum:100000,upgradeStat:'Office Space',upgradeToNum:10},
+		{name:'Office Suite',prerequisite:'Office Unit',header: 'Office',costStat:'Money',costNum:500000,upgradeStat:'Office Space',upgradeToNum:20},
+		{name:'Storefront Office',prerequisite:'Office Suite',header: 'Office',costStat:'Money',costNum:1000000,upgradeStat:'Office Space',upgradeToNum:50},
+		{name:'Small Office Building',prerequisite:'Storefront Office',header: 'Office',costStat:'Money',costNum:5000000,upgradeStat:'Office Space',upgradeToNum:100},
+		{name:'Tower Floor',prerequisite:'Small Office Building',header: 'Office',costStat:'Money',costNum:50000000,upgradeStat:'Office Space',upgradeToNum:200},
+		{name:'Office Tower',prerequisite:'Tower Floor',header: 'Office',costStat:'Money',costNum:100000000,upgradeStat:'Office Space',upgradeToNum:500},
 // 		{name:'Metropolitan Office Tower',prerequisite:'Office Tower',header: 'Office',costStat:'Money',costNum:5000000,upgradeStat:'Office Space',upgradeToNum:700},
-		{name:'Field Office',prerequisite:'Office Tower',header: 'Office',costStat:'Money',costNum:5000,upgradeStat:'Office Space',upgradeByNum:50},
+		{name:'Field Office',prerequisite:'Office Tower',header: 'Office',costStat:'Money',costNum:500000,upgradeStat:'Office Space',upgradeByNum:50},
 	];
 	
 	this.actions = [
 		{name:'Picket',header:'Coordination',completion:0.1,max:100,people: 0,money: 0,reputation:1,progress:0},
 		{name:'March',header:'Coordination',completion:0.2,people: 0.2,money: 0,reputation:0.8,progress:0},
-		{name:'Protest',header:'Coordination',completion:0.3,max:200,people: 0.1,money: 0,reputation:1.2,progress:0},
-		{name:'Direct Action',header:'Coordination',completion:0.5,max:500,people: 0.5,money: 0.2,reputation:0.5,progress:0},
+		{name:'Protest',header:'Coordination',completion:0.3,max:200,people: 0.1,money: 0,reputation:0.9,progress:0},
+		{name:'Direct Action',header:'Coordination',completion:0.5,max:500,people: 0.4,money: 0.2,reputation:0.4,progress:0},
 		{name:'Fundraiser',header:'Coordination',completion:0.5,max:1000,people: 0.1,money: 5,reputation:0.2,progress:0},
 		{name:'Direct Action Campaign',header:'Coordination',completion:0.5,people: 0.5,money: 0.2,reputation:0.5,progress:0},
 		{name:'Fundraising Campaign',header:'Coordination',completion:0.5,people: 0.1,money: 0.8,reputation:0.2,progress:0},
-		{name:'Rally',header:'Coordination',completion:1,people: 0.2,money: 0.3,reputation:0.1,progress:0},
-		{name:'General Strike',header:'Coordination',completion:1,people: 0,money: 0,reputation:1,progress:0},
+		{name:'Rally',header:'Coordination',completion:1,people: 0.2,money: 0.3,reputation:0.1,support:1,progress:0},
+		{name:'General Strike',header:'Coordination',completion:1,people: 0,money: 0,reputation:2,progress:0},
 		{name:'Auxiliaries Recruitment Drive',header:"Auxiliary",completion:1000,progress:1000},
 		{name:'Reclaim Assets Operation',header:"Auxiliary",completion:10000,progress:0,stakes:0.1},
 		{name:'Liberate Enslaved Workers Operation',header:"Auxiliary",completion:100000,progress:0,stakes:0.5},
@@ -145,15 +148,15 @@ function Game() {
 	];
 	
 	this.staff = [
-		{name:'Social Media Ambassadors',pay:1,header:'Office',work:{People:2,Money:12}},
-		{name:'Volunteer Coordinators',pay:2,header:'Office'},
-		{name:'Recruiters',pay:2,header:'Office',work:{People:5}},
-		{name:'Fundraisers',pay:3,header:'Office',work:{Money:50}},
-		{name:'Grant Writers',pay:10,header:'Office'},
-		{name:'Event Planners',pay:5,header:'Office'},
-		{name:'Networkers',pay:20,header:'Office'},
-		{name:'Lobbyists',pay:30,header:'Office'},
-		{name:'Campaign Staff',pay:50,header:'Office',work:{Support:2}},
+		{name:'Social Media Ambassadors',pay:600,header:'Office',work:{People:2,Money:100}},
+		{name:'Volunteer Coordinators',pay:800,header:'Office'},
+		{name:'Recruiters',pay:1000,header:'Office',work:{People:5}},
+		{name:'Fundraisers',pay:1200,header:'Office',work:{Money:500}},
+		{name:'Grant Writers',pay:1500,header:'Office'},
+		{name:'Event Planners',pay:2000,header:'Office'},
+		{name:'Networkers',pay:3000,header:'Office'},
+		{name:'Lobbyists',pay:5000,header:'Office'},
+		{name:'Campaign Staff',pay:7500,header:'Office',work:{Support:2}},
 		{name:'Legislators',pay:0,header:'Legislature',work:{Clout:1}},
 		{name:'Counsel',pay:100,header:'Legislature',work:{Clout:1}},
 	];
@@ -174,51 +177,51 @@ function Game() {
 	this.allies = [];
 
 	this.legislation = [
-		{name:'Direct Democracy',replaces:['Publicly Funded Campaigns','Districtless Voting','Shortest Split-Line Districting','Compulsory Voting','Automatic Voter Registration','Robust Voting Protections','Widespread Disenfranchisement','Donations Protected as Speech'],effects:[{name:'Solidarity',change:50},{name:'Obstruction',change:-100}],description:'Policy is determined by popular consensus, mediated by sophisticated telecommunications.  Candidates and Legislators become Campaign Staff, which generates Clout.',support:0,denounce:0,status:'available'},
-		{name:'Taxes Abolished',replaces:['Nationalize Real Estate','Nationalize Natural Resources','Million+ Income Total Tax','Progressive Taxation','Regressive Taxation','Open Borders'],effects:[{name:"Corporate Power",change:30},{name:"Economic Inequality",change:-10}],description:'Revenue from government leases replaces tax revenue.',support:0,denounce:0,status:'available'},
-		{name:'Build Space Elevator',replaces:['Convert ISS to IISP','Expand Space Program'],effects:[{name:"Tech",change:50},{name:'Solidarity',change:10}],description:"Builds a carbon nanotube tower from the planet's surface to the IILP in Low Earth Orbit, drastically reducing energy costs for launch.",support:0,denounce:0,status:'available'},
-		{name:'Educational Credentialing Program',replaces:['Right to Higher Education','Right to Internet Access','Net Neutrality','Public Arts Renaissance','Civic Engineering Academies','Student Loan Forgiveness'],effects:[{name:"Tech",change:10},{name:"Corporate Power",change:-10},{name:"Economic Inequality",change:-1}],description:'Education pursued outside of educational institutions can be evaluated for degree certification.',support:0,denounce:0,status:'available'},
-		{name:'Right to Cosmetic Healthcare',replaces:['Right to Gender Reassignment','Right to Preventative Healthcare','Right to Corrective Healthcare','Right to Emergency Healthcare','Healthcare Debt'],effects:[{name:"Corporate Power",change:-10},{name:"Economic Inequality",change:-10}],description:'All healthcare is made available to all.',support:0,denounce:0,status:'available'},
-		{name:'Marriage Deregulation',replaces:['Degender Government Records','Recognize Nonbinary Genders','Queer Rights Protections'],effects:[{name:'Solidarity',change:10},{name:"Economic Inequality",change:-10}],description:'Marriage laws eliminated in favor of customizable marriage contracts of various terms, durations, and parties.',support:0,denounce:0,status:'available'},		
-		{name:'Inclusive Public History',replaces:['Reconciliation & Restitution','Acknowledge White Supremacy','Discovery Doctrine'],effects:[{name:'Solidarity',change:20}],description:'A concerted effort to research and revise historical records to account for erased narratives and influences.',support:0,denounce:0,status:'available'},
-		{name:'Nationalize Real Estate',replaces:['Nationalize Natural Resources','Million+ Income Total Tax','Progressive Taxation','Regressive Taxation'],effects:[{name:"Corporate Power",change:-30},{name:"Economic Inequality",change:-10}],description:'All land becomes property of the state; unoccupied houses leased to individuals and families in need of homes. Leases pay into the national treasury.',support:0,denounce:0,status:'available'},
-		{name:'Right to Shelter',replaces:[],effects:[{name:"Economic Inequality",change:-20}],description:'Citizens are guaranteed basic housing in huge government-run dormitories.',support:0,denounce:0,status:'available'},
+		{name:'Direct Democracy',replaces:['Publicly Funded Campaigns','Districtless Voting','Shortest Split-Line Districting','Compulsory Voting','Automatic Voter Registration','Robust Voting Protections','Widespread Disenfranchisement','Donations Protected as Speech'],effects:[{name:'Solidarity',change:250},{name:'Obstruction',change:-100}],description:'Policy is determined by popular consensus, mediated by sophisticated telecommunications.  Candidates and Legislators become Campaign Staff, which generates Clout.',support:0,denounce:0,status:'available'},
+		{name:'Taxes Abolished',replaces:['Nationalize Real Estate','Nationalize Natural Resources','Million+ Income Total Tax','Progressive Taxation','Regressive Taxation','Open Borders'],effects:[{name:"Corporate Power",change:30},{name:"Economic Inequality",change:-5}],description:'Revenue from government leases replaces tax revenue.',support:0,denounce:0,status:'available'},
+		{name:'Build Space Elevator',replaces:['Convert ISS to IISP','Expand Space Program'],effects:[{name:"Tech",change:20},{name:'Solidarity',change:50}],description:"Builds a carbon nanotube tower from the planet's surface to the IILP in Low Earth Orbit, drastically reducing energy costs for launch.",support:0,denounce:0,status:'available'},
+		{name:'Educational Credentialing Program',replaces:['Right to Higher Education','Right to Internet Access','Net Neutrality','Public Arts Renaissance','Civic Engineering Academies','Student Loan Forgiveness'],effects:[{name:"Tech",change:10},{name:"Corporate Power",change:-10},{name:"Economic Inequality",change:-5}],description:'Education pursued outside of educational institutions can be evaluated for degree certification.',support:0,denounce:0,status:'available'},
+		{name:'Right to Cosmetic Healthcare',replaces:['Right to Gender Reassignment','Right to Preventative Healthcare','Right to Corrective Healthcare','Right to Emergency Healthcare','Healthcare Debt'],effects:[{name:"Corporate Power",change:-10},{name:"Economic Inequality",change:-2}],description:'All healthcare is made available to all.',support:0,denounce:0,status:'available'},
+		{name:'Marriage Deregulation',replaces:['Degender Government Records','Recognize Nonbinary Genders','Queer Rights Protections'],effects:[{name:'Solidarity',change:40},{name:"Economic Inequality",change:-2}],description:'Marriage laws eliminated in favor of customizable marriage contracts of various terms, durations, and parties.',support:0,denounce:0,status:'available'},		
+		{name:'Inclusive Public History',replaces:['Reconciliation & Restitution','Acknowledge White Supremacy','Discovery Doctrine'],effects:[{name:'Solidarity',change:80}],description:'A concerted effort to research and revise historical records to account for erased narratives and influences.',support:0,denounce:0,status:'available'},
+		{name:'Nationalize Real Estate',replaces:['Nationalize Natural Resources','Million+ Income Total Tax','Progressive Taxation','Regressive Taxation'],effects:[{name:"Corporate Power",change:-30},{name:"Economic Inequality",change:-5}],description:'All land becomes property of the state; unoccupied houses leased to individuals and families in need of homes. Leases pay into the national treasury.',support:0,denounce:0,status:'available'},
+		{name:'Right to Shelter',replaces:[],effects:[{name:"Economic Inequality",change:-5}],description:'Citizens are guaranteed basic housing in huge government-run dormitories.',support:0,denounce:0,status:'available'},
 		{name:'Right to Gender Reassignment',replaces:['Right to Corrective Healthcare','Right to Emergency Healthcare','Healthcare Debt'],effects:[{name:"Corporate Power",change:-10},{name:"Economic Inequality",change:-1}],description:'Gender Reassignment procedures made available to all.  Cosmetic healthcare remains the financial responsibility of the individual.',support:0,denounce:0,status:'available'},
 		{name:'Publicly Funded Campaigns',replaces:['Districtless Voting','Shortest Split-Line Districting','Compulsory Voting','Automatic Voter Registration','Robust Voting Protections','Widespread Disenfranchisement','Donations Protected as Speech'],effects:[{name:"Corporate Power",change:-10},{name:'Obstruction',change:-10}],description:'Campaign spending is limited to an equal budget provided by the state.  Your Campaign Staff get paid by the state.',support:0,denounce:0,status:'available'},
-		{name:'Nationalize Natural Resources',replaces:['Million+ Income Total Tax','Progressive Taxation','Regressive Taxation'],effects:[{name:"Tech",change:10},{name:"Corporate Power",change:-30},{name:"Economic Inequality",change:-10}],description:'All natural resources become property of the state; individuals and business interests may lease them by paying into the national treasury.',support:0,denounce:0,status:'available'},
-		{name:'Degender Government Records',replaces:['Recognize Nonbinary Genders','Queer Rights Protections'],effects:[{name:'Solidarity',change:10}],description:'Removes all references to gender in all government documents and legislation.  Gender becomes purely a matter of personal expression, not a legal category.',support:0,denounce:0,status:'available'},
-		{name:'Districtless Voting',replaces:['Shortest Split-Line Districting','Compulsory Voting','Automatic Voter Registration','Robust Voting Protections','Widespread Disenfranchisement'],effects:[{name:'Solidarity',change:10},{name:'Obstruction',change:-10}],description:'All representation is elected at large; candidates may focus their campaign on self-defined demographics.',support:0,denounce:0,status:'available'},
-		{name:'Reconciliation & Restitution',replaces:['Acknowledge White Supremacy','Discovery Doctrine'],effects:[{name:'Solidarity',change:10},{name:"Corporate Power",change:-20},{name:"Economic Inequality",change:-5}],description:'',support:0,denounce:0,status:'available'},
-		{name:'Convert ISS to IISP',replaces:['Expand Space Program'],effects:[{name:"Tech",change:20}],description:'Converts the International Space Station into the International Interplanetary Space Port.',support:0,denounce:0,status:'available'},
-		{name:'Right to Higher Education',replaces:['Right to Internet Access','Net Neutrality','Public Arts Renaissance','Civic Engineering Academies','Student Loan Forgiveness'],effects:[{name:"Tech",change:10},{name:'Solidarity',change:10},{name:"Corporate Power",change:-10},{name:"Economic Inequality",change:-2}],description:'Public education extended through doctorate programs for dedicated students.',support:0,denounce:0,status:'available'},
-		{name:'Open Borders',replaces:[],effects:[{name:"Tech",change:10},{name:'Solidarity',change:1}],description:'Border crossings are logged but not restricted.',support:0,denounce:0,status:'available'},
-		{name:'Right to Preventative Healthcare',replaces:['Right to Corrective Healthcare','Right to Emergency Healthcare','Healthcare Debt'],effects:[{name:"Corporate Power",change:-10},{name:"Economic Inequality",change:-10}],description:'Preventative, corrective, and emergency healthcare is made available to all.  Additional healthcare is the financial responsibility of the individual.',support:0,denounce:0,status:'available'},
-		{name:'Million+ Income Total Tax',replaces:['Progressive Taxation','Regressive Taxation'],effects:[{name:"Corporate Power",change:-10},{name:"Economic Inequality",change:-20}],description:"Income tax beyond a citizen's first million is taxed at 100%.  You can make more, but it's just a high score.  The money goes to your fellow citizens.",support:0,denounce:0,status:'available'},
-		{name:'Shortest Split-Line Districting',replaces:['Compulsory Voting','Automatic Voter Registration','Robust Voting Protections','Widespread Disenfranchisement'],effects:[{name:'Solidarity',change:10},{name:'Obstruction',change:-10}],description:'Voting districts are determined by mathematical algorithm to avoid partisan gerrymandering.',support:0,denounce:0,status:'available'},
-		{name:"Acknowledge White Supremacy",replaces:['Discovery Doctrine'],effects:[{name:'Solidarity',change:10}],description:'Acknowledge that the state has been complicit in creating and maintaining a white supremacist social order... but do nothing.',support:0,denounce:0,status:'available'},
-		{name:'Recognize Nonbinary Genders',replaces:['Queer Rights Protections'],effects:[{name:'Solidarity',change:10}],description:'Allows citizens to obtain government identification in a multitude of genders in addition to "male" and "female."',support:0,denounce:0,status:'available'},
+		{name:'Nationalize Natural Resources',replaces:['Million+ Income Total Tax','Progressive Taxation','Regressive Taxation'],effects:[{name:"Tech",change:8},{name:"Corporate Power",change:-30},{name:"Economic Inequality",change:-5}],description:'All natural resources become property of the state; individuals and business interests may lease them by paying into the national treasury.',support:0,denounce:0,status:'available'},
+		{name:'Degender Government Records',replaces:['Recognize Nonbinary Genders','Queer Rights Protections'],effects:[{name:'Solidarity',change:40}],description:'Removes all references to gender in all government documents and legislation.  Gender becomes purely a matter of personal expression, not a legal category.',support:0,denounce:0,status:'available'},
+		{name:'Districtless Voting',replaces:['Shortest Split-Line Districting','Compulsory Voting','Automatic Voter Registration','Robust Voting Protections','Widespread Disenfranchisement'],effects:[{name:'Solidarity',change:20},{name:'Obstruction',change:-10}],description:'All representation is elected at large; candidates may focus their campaign on self-defined demographics.',support:0,denounce:0,status:'available'},
+		{name:'Reconciliation & Restitution',replaces:['Acknowledge White Supremacy','Discovery Doctrine'],effects:[{name:'Solidarity',change:100},{name:"Corporate Power",change:-20},{name:"Economic Inequality",change:-1}],description:'',support:0,denounce:0,status:'available'},
+		{name:'Convert ISS to IISP',replaces:['Expand Space Program'],effects:[{name:"Tech",change:10}],description:'Converts the International Space Station into the International Interplanetary Space Port.',support:0,denounce:0,status:'available'},
+		{name:'Right to Higher Education',replaces:['Right to Internet Access','Net Neutrality','Public Arts Renaissance','Civic Engineering Academies','Student Loan Forgiveness'],effects:[{name:"Tech",change:10},{name:'Solidarity',change:60},{name:"Corporate Power",change:-10},{name:"Economic Inequality",change:-4}],description:'Public education extended through doctorate programs for dedicated students.',support:0,denounce:0,status:'available'},
+		{name:'Open Borders',replaces:[],effects:[{name:"Tech",change:7},{name:'Solidarity',change:80}],description:'Border crossings are logged but not restricted.',support:0,denounce:0,status:'available'},
+		{name:'Right to Preventative Healthcare',replaces:['Right to Corrective Healthcare','Right to Emergency Healthcare','Healthcare Debt'],effects:[{name:"Corporate Power",change:-10},{name:"Economic Inequality",change:-4}],description:'Preventative, corrective, and emergency healthcare is made available to all.  Additional healthcare is the financial responsibility of the individual.',support:0,denounce:0,status:'available'},
+		{name:'Million+ Income Total Tax',replaces:['Progressive Taxation','Regressive Taxation'],effects:[{name:"Corporate Power",change:-10},{name:"Economic Inequality",change:-3}],description:"Income tax beyond a citizen's first million is taxed at 100%.  You can make more, but it's just a high score.  The money goes to your fellow citizens.",support:0,denounce:0,status:'available'},
+		{name:'Shortest Split-Line Districting',replaces:['Compulsory Voting','Automatic Voter Registration','Robust Voting Protections','Widespread Disenfranchisement'],effects:[{name:'Solidarity',change:30},{name:'Obstruction',change:-10}],description:'Voting districts are determined by mathematical algorithm to avoid partisan gerrymandering.',support:0,denounce:0,status:'available'},
+		{name:"Acknowledge White Supremacy",replaces:['Discovery Doctrine'],effects:[{name:'Solidarity',change:60}],description:'Acknowledge that the state has been complicit in creating and maintaining a white supremacist social order... but do nothing.',support:0,denounce:0,status:'available'},
+		{name:'Recognize Nonbinary Genders',replaces:['Queer Rights Protections'],effects:[{name:'Solidarity',change:20}],description:'Allows citizens to obtain government identification in a multitude of genders in addition to "male" and "female."',support:0,denounce:0,status:'available'},
 		{name:'Expand Space Program',replaces:[],effects:[{name:"Tech",change:10},],description:'Revitalize the space program with robust funding and visionary goals.',support:0,denounce:0,status:'available'},
 		{name:"Citizens' Defense Auxiliary",replaces:[],effects:[],description:"Regulates a citizens' auxiliary militia.",support:0,denounce:0,status:'available'},
 		{name:'Compulsory Voting',replaces:['Automatic Voter Registration','Robust Voting Protections','Widespread Disenfranchisement'],effects:[{name:'Obstruction',change:-10}],description:'Failing to vote incurs a significant fine.  All eligible voters are automatically enrolled.',support:0,denounce:0,status:'available'},
-		{name:'Public Arts Renaissance',replaces:[],effects:[{name:'Solidarity',change:30}],description:'Significant funding for the production and dissemination of new art spawns innovative new movements.',support:0,denounce:0,status:'available'},
-		{name:'Civic Engineering Academies',replaces:['Student Loan Forgiveness'],effects:[{name:"Tech",change:30},],description:'Creates specialized public graduate programs focusing on civil and social engineering.',support:0,denounce:0,status:'available'},
-		{name:'Universal Basic Income',replaces:['Progressive Taxation','Regressive Taxation'],effects:[{name:"Economic Inequality",change:-50},{name:"Corporate Power",change:-30}],description:'All citizens receive a government stipend providing a basic standard of living.',support:0,denounce:0,status:'available'},
-		{name:'Student Loan Forgiveness',replaces:[],effects:[{name:"Corporate Power",change:-10},{name:"Economic Inequality",change:-20}],description:'Student loan payments are made tax deductible.',support:0,denounce:0,status:'available'},
-		{name:'Right to Corrective Healthcare',replaces:['Right to Emergency Healthcare','Healthcare Debt'],effects:[{name:"Corporate Power",change:-10},{name:"Economic Inequality",change:-1}],description:'Corrective and emergency healthcare is made available to all.  Additional healthcare is the financial responsibility of the individual.',support:0,denounce:0,status:'available'},
-		{name:'Automatic Voter Registration',replaces:['Robust Voting Protections','Widespread Disenfranchisement'],effects:[{name:'Solidarity',change:10},{name:'Obstruction',change:-10}],description:'Voters are automatically enrolled, but not required to vote.',support:0,denounce:0,status:'available'},
-		{name:'Right to Internet Access',replaces:['Net Neutrality'],effects:[{name:"Tech",change:10},{name:"Economic Inequality",change:-10}],description:'Internet access made a public good and a right to all citizens',support:0,denounce:0,status:'available'},
-		{name:'Progressive Taxation',replaces:['Regressive Taxation'],effects:[{name:"Corporate Power",change:-10},{name:"Economic Inequality",change:-10}],description:'The rich are taxed at a higher effective rate than the poor.',support:0,denounce:0,status:'available'},
-		{name:'Right to Emergency Healthcare',replaces:[],effects:[{name:"Corporate Power",change:-10},{name:"Economic Inequality",change:-10}],description:'Emergency healthcare is made available to all.  Additional healthcare is the financial responsibility of the individual.',support:0,denounce:0,status:'available'},
-		{name:'Queer Rights Protections',replaces:[],effects:[{name:'Solidarity',change:10},{name:"Economic Inequality",change:-10}],description:'Individuals may not be discriminated on the basis of gender (assigned or expressed), sexual orientation, or marital affiliation.',support:0,denounce:0,status:'available'},
-		{name:'Robust Voting Protections',replaces:['Widespread Disenfranchisement'],effects:[{name:'Solidarity',change:10},{name:'Obstruction',change:-10}],description:'Funding provided to ensure the participation of historically disenfranchised populations.',support:0,denounce:0,status:'available'},
-		{name:'Net Neutrality',replaces:[],effects:[{name:"Tech",change:10},{name:"Corporate Power",change:-10}],description:'Private enterprise provides Internet service, but is prohibited from basing fees or services based on content delivered.',support:0,denounce:0,status:'available'},
+		{name:'Public Arts Renaissance',replaces:[],effects:[{name:'Solidarity',change:100}],description:'Significant funding for the production and dissemination of new art spawns innovative new movements.',support:0,denounce:0,status:'available'},
+		{name:'Civic Engineering Academies',replaces:['Student Loan Forgiveness'],effects:[{name:"Tech",change:15},],description:'Creates specialized public graduate programs focusing on civil and social engineering.',support:0,denounce:0,status:'available'},
+		{name:'Universal Basic Income',replaces:['Progressive Taxation','Regressive Taxation'],effects:[{name:"Economic Inequality",change:-3},{name:"Corporate Power",change:-30}],description:'All citizens receive a government stipend providing a basic standard of living.',support:0,denounce:0,status:'available'},
+		{name:'Student Loan Forgiveness',replaces:[],effects:[{name:"Corporate Power",change:-10},{name:"Economic Inequality",change:-2}],description:'Student loan payments are made tax deductible.',support:0,denounce:0,status:'available'},
+		{name:'Right to Corrective Healthcare',replaces:['Right to Emergency Healthcare','Healthcare Debt'],effects:[{name:"Corporate Power",change:-10},{name:"Economic Inequality",change:-4}],description:'Corrective and emergency healthcare is made available to all.  Additional healthcare is the financial responsibility of the individual.',support:0,denounce:0,status:'available'},
+		{name:'Automatic Voter Registration',replaces:['Robust Voting Protections','Widespread Disenfranchisement'],effects:[{name:'Solidarity',change:30},{name:'Obstruction',change:-10}],description:'Voters are automatically enrolled, but not required to vote.',support:0,denounce:0,status:'available'},
+		{name:'Right to Internet Access',replaces:['Net Neutrality'],effects:[{name:"Tech",change:5},{name:"Economic Inequality",change:-2}],description:'Internet access made a public good and a right to all citizens',support:0,denounce:0,status:'available'},
+		{name:'Progressive Taxation',replaces:['Regressive Taxation'],effects:[{name:"Corporate Power",change:-10},{name:"Economic Inequality",change:-3}],description:'The rich are taxed at a higher effective rate than the poor.',support:0,denounce:0,status:'available'},
+		{name:'Right to Emergency Healthcare',replaces:[],effects:[{name:"Corporate Power",change:-10},{name:"Economic Inequality",change:-3}],description:'Emergency healthcare is made available to all.  Additional healthcare is the financial responsibility of the individual.',support:0,denounce:0,status:'available'},
+		{name:'Queer Rights Protections',replaces:[],effects:[{name:'Solidarity',change:20},{name:"Economic Inequality",change:-1}],description:'Individuals may not be discriminated on the basis of gender (assigned or expressed), sexual orientation, or marital affiliation.',support:0,denounce:0,status:'available'},
+		{name:'Robust Voting Protections',replaces:['Widespread Disenfranchisement'],effects:[{name:'Solidarity',change:20},{name:'Obstruction',change:-10}],description:'Funding provided to ensure the participation of historically disenfranchised populations.',support:0,denounce:0,status:'available'},
+		{name:'Net Neutrality',replaces:[],effects:[{name:"Tech",change:5},{name:"Corporate Power",change:-10}],description:'Private enterprise provides Internet service, but is prohibited from basing fees or services based on content delivered.',support:0,denounce:0,status:'available'},
 
-		{name:'Healthcare Debt',replaces:[],effects:[],description:'Legal framework saddles patients with lifetime debt for medical care.',support:0,denounce:0,status:'enacted'},
-		{name:'Donations Protected as Speech',replaces:[],effects:[],description:'Campaign donations are legally protected as speech, allowing the rich to influence politics to a greater degree.',support:0,denounce:0,status:'enacted'},
-		{name:'Widespread Disenfranchisement',replaces:[],effects:[],description:'Multiple legal means of disenfranchising voters, especially those from marginalized populations.',support:0,denounce:0,status:'enacted'},
-		{name:'Corporate Inculpability',replaces:[],effects:[],description:'Individuals working for corporations cannot be held liable for damages they cause in the course of their job.',support:0,denounce:0,status:'enacted'},
-		{name:'Regressive Taxation',replaces:[],effects:[],description:'The poor are taxed at a higher effective rate than the rich.',support:0,denounce:0,status:'enacted'},
-		{name:'Discovery Doctrine',replaces:[],effects:[],description:"Land and natural resources deemed 'unimproved' may be freely claimed.",support:0,denounce:0,status:'enacted'},
+		{name:'Healthcare Debt',replaces:[],effects:[],description:'Legal framework saddles patients with lifetime debt for medical care.',support:0,denounce:0,status:'enacted',statusquo:true},
+		{name:'Donations Protected as Speech',replaces:[],effects:[],description:'Campaign donations are legally protected as speech, allowing the rich to influence politics to a greater degree.',support:0,denounce:0,status:'enacted',statusquo:true},
+		{name:'Widespread Disenfranchisement',replaces:[],effects:[],description:'Multiple legal means of disenfranchising voters, especially those from marginalized populations.',support:0,denounce:0,status:'enacted',statusquo:true},
+		{name:'Corporate Inculpability',replaces:[],effects:[],description:'Individuals working for corporations cannot be held liable for damages they cause in the course of their job.',support:0,denounce:0,status:'enacted',statusquo:true},
+		{name:'Regressive Taxation',replaces:[],effects:[],description:'The poor are taxed at a higher effective rate than the rich.',support:0,denounce:0,status:'enacted',statusquo:true},
+		{name:'Discovery Doctrine',replaces:[],effects:[],description:"Land and natural resources deemed 'unimproved' may be freely claimed.",support:0,denounce:0,status:'enacted',statusquo:true},
 	];
 	
 	this.solidarity = 0;
@@ -307,8 +310,8 @@ function Game() {
 	this.doAction = function(action) {
 		if (action.header == 'Coordination') {
 			var turnout = this.attendees(action);
-			var buzzModifier = 1 + this.buzzModifier();
-			view.displayEventResult(action,turnout);
+			var buzzModifier = this.buzzModifier();
+			view.displayEventResult(action,turnout,buzzModifier);
 			this.update('Reputation',action.reputation * turnout * buzzModifier);
 			this.update('People',action.people * turnout * buzzModifier);
 			this.update('Money',action.money * turnout * buzzModifier);
@@ -331,13 +334,11 @@ function Game() {
 	};
 	
 	this.battle = function(action) {
-		console.log(action);
 		var result;
 		var corpScore = game.mercenaries * Math.random() * action.stakes;
 		var commScore = game.soldiers * Math.random();
-		var corpCasualties = Math.ceil(Math.max(1,100 - (corpScore / commScore)*10)/100 * game.mercenaries);
-		var commCasualties = Math.ceil(Math.max(1,100 - (commScore / corpScore)*10)/100 * game.soldiers);
-		console.log(corpScore,commScore,corpCasualties,commCasualties);
+		var corpCasualties = Math.ceil(Math.min(100,Math.max(1,100 - (corpScore / commScore)*10))/100 * game.mercenaries);
+		var commCasualties = Math.ceil(Math.min(100,Math.max(1,100 - (commScore / corpScore)*10))/100 * game.soldiers);
 		var num = Math.round(Math.random()*100)/100;
 		if (corpScore < commScore) {
 			if (action.name == 'Reclaim Assets Operation') {
@@ -537,6 +538,29 @@ function Game() {
 		view.fillStrokeAllLegislation(legislation);
 	},
 	
+	this.revert = function(legislation) {
+		if (legislation.statusquo == true) {
+			legislation.status = 'enacted';
+			view.fillStrokeAllLegislation(legislation);
+		} else {
+			legislation.status = 'available';
+			view.fillStrokeAllLegislation(legislation);
+		};
+		var total = 0, count = 0;
+		for (var legislation of game.legislation) {
+			if (legislation.status == 'enacted') {
+				total += legislation.overton;
+				count++;
+			};
+		};
+		if (count > 0) {
+			game.overton = 1.2 * total / count;
+		};
+		view.shiftOverton(game.overton);
+		game.economicinequality = game.economicinequality + 5;
+		view.shiftLorenz(game.economicinequality);
+	},
+	
 	this.tick = function() {
 		for (var category in this.thresholds) {
 			if (this.unlocked[category]) {
@@ -578,7 +602,7 @@ function Game() {
 			};
 		};
 		if (game.unlocked.RecurringDonations) {
-			this.update("Money",this.people * 0.01);
+			this.update("Money",this.people * 0.05);
 		};
 		var totalStaff = 0, totalPayroll = 0;
 		for (var employee of this.staff) {
@@ -652,6 +676,7 @@ function Game() {
 				document.getElementById(ally.name.replace(/ /g,'')+'AllyDiv').style.display = 'block';
 			};
 		};
+		var volunteers = Math.min(50,game.people / ( Math.random() * 500 ));
 		for (var action of game.actions) {
 			if (action.header !== 'Coordination' && game.unlocked[action.name.replace(/ /g,'')]) {
 				action.progress += game.logistics;
@@ -660,11 +685,23 @@ function Game() {
 					action.progress = Infinity;
 					view.enableAction(action);
 				};
+			} else if (game.unlocked.OnlineCalendar && game.unlocked[action.name.replace(/ /g,'')]) {
+				for (var i=0;i<volunteers;i++) {
+					if (Math.random() > 0.5) {
+						this.planAction(action);
+						view.updateButton(action);
+						if (game.unlocked.DirectorofGrassrootsOperations && ( action.progress > action.completion * game.people || action.progress > action.max)) {
+							this.doAction(action);
+						};
+					};
+				};
 			};
 		};
 		
 		if (game.buzz > 0) {
-			this.update('Buzz',game.buzz * -0.1 / (1+game.socialmediaambassadors));
+			var integratedsocialmedia = 0;
+			if (game.unlocked.IntegratedSocialMedia == true) {integratedsocialmedia = game.socialmediaambassadors};
+			this.update('Buzz',game.buzz * -0.1 / (1+integratedsocialmedia));
 			if (game.buzz < 10 && totalStaff > 0) {view.lowBuzzWarning();} else {view.clearReputationNotes();};
 		};
 		
@@ -722,17 +759,30 @@ function Game() {
 		if (game.corporatepower < 50) {
 			view.unlock('TheCorporateInsurgencyDiv');
 			this.update("Prestige",game.corporatepower);
+			this.update("Prestige",game.prestige * game.populationenslaved);
+			this.update("Prestige",game.prestige * game.assetsseized);
 			if (game.prestige < 0) {game.prestige = 0};
-			if (game.mercenaries < game.assetsseized * 1000) {
+			if (game.mercenaries < game.assetsseized * 100000) {
 				this.update("Mercenaries",Math.max(0,game.prestige));
-			} else if (Math.random() < 0.5 && game.assetsseized < 100) {
+			} else if (Math.random() < 0.5 && game.assetsseized < 1) {
 				this.update("Assets Seized",Math.random()/100);
+				this.update("Assets Seized",1 - game.assetsseized);
 				this.update("Mercenaries",game.mercenaries * Math.random() * -0.2);
-			} else if (game.populationenslaved < 100) {
+			} else if (game.populationenslaved < 1) {
 				this.update("Population Enslaved",Math.random()/100);
+				this.update("Population Enslaved",1 - game.populationenslaved);
 				this.update("Mercenaries",game.mercenaries * Math.random() * -0.2);
 			} else {
 				console.log('game over');
+				for (var employee of ['socialmedia','volunteercoordinators','recruiters','fundraisers','grantwriters','eventplanners','lobbyists','campaignstaff','candidates','legislators','support','clout','money','people']) {
+					game[employee] = 0;
+				};
+				var time = 300;
+				for (var legislation of game.legislation) {
+					var revertEvent = setTimeout(game.revert.bind(game,legislation),time);
+					time += 100;
+				};
+				view.defeatScreen();
 			};
 			if (game.mercenaries < 0) {
 				game.mercenaries = 0;
@@ -775,6 +825,9 @@ function Game() {
 			view.update('Reputation');
 		};
 		if (this.reputation < 0) {
+			if (totalStaff > 0) { // Don't pay your staff, lose people
+				this.update("People",(this.people-20) * -0.1);
+			};
 			for (employee of this.staff) {
 				if (this[employee.name.toLowerCase().replace(/ /g,'')] > 0) {
 					this[employee.name.toLowerCase().replace(/ /g,'')]--;
@@ -784,9 +837,6 @@ function Game() {
 			};
 			this.reputation = 0;
 			view.update('Reputation');
-		};
-		if (totalStaff < 1 && this.reputation == 0 && this.people > 20) {
-			this.update("People",(this.people-20) * -0.1);
 		};
 		if (totalStaff >= this.officespace || totalStaff > this.people) {
 			for (var employee of game.staff) {
@@ -803,7 +853,7 @@ function Game() {
 				};
 			};
 		};
-		document.getElementById('OfficeStaffSummary').innerHTML = totalStaff+" staff / " + game.officespace+" max ~ $"+totalPayroll+"/tick payroll";
+		document.getElementById('OfficeStaffSummary').innerHTML = totalStaff+" staff / " + game.officespace+" max ~ $"+totalPayroll.toLocaleString()+"/week payroll";
 		view.enableButtons();
 		game.tickCount++;
 	};
